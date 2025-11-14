@@ -114,7 +114,7 @@ jobs:
           python manage.py test
 
   docker:
-    name: 🐳 Docker Build & Push to ECR
+    name: 🐳 Docker Build & Push ECR
     runs-on: ubuntu-latest
     needs: tests
 
@@ -125,7 +125,7 @@ jobs:
         id: aws-creds
         uses: aws-actions/configure-aws-credentials@v5.1.0
         with:
-          aws-region: eu-west-1
+          aws-region: eu-north-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
@@ -133,8 +133,8 @@ jobs:
       # Login
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region eu-west-1 \
-          | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com
+          aws ecr get-login-password --region eu-north-1 \
+          | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com
 
       # Build image
       - name: Build Docker image
@@ -145,10 +145,10 @@ jobs:
       - name: Tag Docker image for ECR
         run: |
           docker tag django-polls:latest \
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/django-polls:latest
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/django-polls:latest
 
       # Push image
       - name: Push Docker image to ECR
         run: |
           docker push \
-            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-west-1.amazonaws.com/django-polls:latest
+            ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com/django-polls:latest
