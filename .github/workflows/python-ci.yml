@@ -136,7 +136,7 @@ jobs:
           aws ecr get-login-password --region eu-north-1 \
           | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.eu-north-1.amazonaws.com
 
-      # Build image
+      # Build imagee
       - name: Build Docker image
         run: |
           docker build -t django-polls .
