@@ -28,6 +28,27 @@ jobs:
           python --version
           pip list
 
+  ruff:
+    name: 🌪 Ruff Lint (rapide)
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Installer ruff
+        run: |
+          pip install ruff
+
+      - name: Lancer Ruff
+        run: |
+          echo "Lancement de Ruff sur django_polls..."
+          ruff check django_polls
+
   lint:
     name: 🔍 Lint Pylint (min 7/10)
     runs-on: ubuntu-latest
@@ -50,7 +71,7 @@ jobs:
       - name: Lancer Pylint + extraction score
         run: |
           echo "Exécution de pylint sur django_polls..."
-          pylint django_polls > pylint_output.txt || true
+          pylint django-polls > pylint_output.txt || true
 
           echo "==== Résultat Pylint ===="
           cat pylint_output.txt
