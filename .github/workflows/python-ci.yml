@@ -9,6 +9,9 @@ jobs:
     name: 🏗️ Build (Django + dépendances)
     runs-on: ubuntu-latest
 
+    outputs:
+      build-ok: true
+
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
@@ -40,17 +43,17 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Installer ruff
+      - name: Installer Ruff
         run: |
           pip install ruff
 
       - name: Lancer Ruff
         run: |
-          echo "Lancement de Ruff sur django_polls..."
+          echo "Lancement de Ruff..."
           ruff check django_polls
 
-  lint:
-    name: 🔍 Lint Pylint (min 7/10)
+  pylint:
+    name: 🔍 Pylint (min 7/10)
     runs-on: ubuntu-latest
     needs: build
 
@@ -70,18 +73,15 @@ jobs:
 
       - name: Lancer Pylint + extraction score
         run: |
-          echo "Exécution de pylint sur django_polls..."
-          pylint django-polls > pylint_output.txt || true
+          echo "Exécution de Pylint..."
+          pylint django_polls > pylint_output.txt || true
 
           echo "==== Résultat Pylint ===="
           cat pylint_output.txt
 
-          # Extraction de la note finale (ex: 8.50/10)
           SCORE=$(grep -oP "(?<=rated at )[\d\.]+" pylint_output.txt || echo "0")
-
           echo "Score pylint détecté : $SCORE / 10"
 
-          # Vérification du score minimal
           python3 - <<EOF
           score = float("$SCORE")
           if score < 7:
@@ -94,7 +94,9 @@ jobs:
   tests:
     name: 🧪 Tests Django
     runs-on: ubuntu-latest
-    needs: build
+    needs:
+      - ruff
+      - pylint
 
     steps:
       - uses: actions/checkout@v4
