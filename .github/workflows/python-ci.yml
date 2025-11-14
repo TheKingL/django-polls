@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: 🏗️ Build (Django + dépendances)
+    name: 🏗️ Build
     runs-on: ubuntu-latest
 
     outputs:
@@ -32,7 +32,7 @@ jobs:
           pip list
 
   ruff:
-    name: 🌪 Ruff Lint (rapide)
+    name: 🌪 Ruff
     runs-on: ubuntu-latest
     needs: build
 
